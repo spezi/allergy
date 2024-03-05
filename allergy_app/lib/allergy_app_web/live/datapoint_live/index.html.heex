@@ -1,0 +1,45 @@
+<.header>
+  Listing Datapoints
+  <:actions>
+    <.link patch={~p"/datapoints/new"}>
+      <.button>New Datapoint</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="datapoints"
+  rows={@streams.datapoints}
+  row_click={fn {_id, datapoint} -> JS.navigate(~p"/datapoints/#{datapoint}") end}
+>
+  <:col :let={{_id, datapoint}} label="Medicine"><%= datapoint.medicine %></:col>
+  <:col :let={{_id, datapoint}} label="Medicinetype"><%= datapoint.medicinetype %></:col>
+  <:col :let={{_id, datapoint}} label="Region"><%= datapoint.region %></:col>
+  <:col :let={{_id, datapoint}} label="Symptom"><%= datapoint.symptom %></:col>
+  <:col :let={{_id, datapoint}} label="Intensity"><%= datapoint.intensity %></:col>
+  <:action :let={{_id, datapoint}}>
+    <div class="sr-only">
+      <.link navigate={~p"/datapoints/#{datapoint}"}>Show</.link>
+    </div>
+    <.link patch={~p"/datapoints/#{datapoint}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, datapoint}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: datapoint.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="datapoint-modal" show on_cancel={JS.patch(~p"/datapoints")}>
+  <.live_component
+    module={AllergyAppWeb.DatapointLive.FormComponent}
+    id={@datapoint.id || :new}
+    title={@page_title}
+    action={@live_action}
+    datapoint={@datapoint}
+    patch={~p"/datapoints"}
+  />
+</.modal>

@@ -1,0 +1,30 @@
+<.header>
+  Datapoint <%= @datapoint.id %>
+  <:subtitle>This is a datapoint record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/datapoints/#{@datapoint}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit datapoint</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Medicine"><%= @datapoint.medicine %></:item>
+  <:item title="Medicinetype"><%= @datapoint.medicinetype %></:item>
+  <:item title="Region"><%= @datapoint.region %></:item>
+  <:item title="Symptom"><%= @datapoint.symptom %></:item>
+  <:item title="Intensity"><%= @datapoint.intensity %></:item>
+</.list>
+
+<.back navigate={~p"/datapoints"}>Back to datapoints</.back>
+
+<.modal :if={@live_action == :edit} id="datapoint-modal" show on_cancel={JS.patch(~p"/datapoints/#{@datapoint}")}>
+  <.live_component
+    module={AllergyAppWeb.DatapointLive.FormComponent}
+    id={@datapoint.id}
+    title={@page_title}
+    action={@live_action}
+    datapoint={@datapoint}
+    patch={~p"/datapoints/#{@datapoint}"}
+  />
+</.modal>
