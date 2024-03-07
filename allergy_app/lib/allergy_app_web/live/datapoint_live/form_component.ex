@@ -5,7 +5,7 @@ defmodule AllergyAppWeb.DatapointLive.FormComponent do
 
   @impl true
   def render(assigns) do
-    dbg(assigns.form.source.changes)
+    #dbg(assigns)
     ~H"""
     <div>
       <.header>
@@ -20,6 +20,7 @@ defmodule AllergyAppWeb.DatapointLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
+        <.input field={@form[:user_id]} type="hidden" label="Medicine" value={@user_id}/>
         <.input field={@form[:medicine]} type="checkbox" label="Medicine" />
         <.input :if={@medicine} field={@form[:medicinetype]} type="select" label="Medicinetype" options={@options.medizinetype} />
         <.input field={@form[:region]} type="select" label="Region" options={@options.region} />
@@ -48,6 +49,10 @@ defmodule AllergyAppWeb.DatapointLive.FormComponent do
   def handle_event("validate", %{"datapoint" => datapoint_params}, socket) do
     #form[:changes].form.source.changes[:medicine]
     dbg(datapoint_params)
+
+    #datapoint_params = Map.put(datapoint_params, :user_id, socket.assigns.current_user.id)
+    #dbg(datapoint_params)
+
     changeset =
       socket.assigns.datapoint
       |> Allergy.change_datapoint(datapoint_params)

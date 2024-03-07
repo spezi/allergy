@@ -12,10 +12,11 @@
   rows={@streams.datapoints}
   row_click={fn {_id, datapoint} -> JS.navigate(~p"/datapoints/#{datapoint}") end}
 >
-
-  <:col :let={{_id, datapoint}} label="Datum"><%= datapoint.inserted_at %></:col>
-
-
+  <:col :let={{_id, datapoint}} label="Medicine"><%= datapoint.medicine %></:col>
+  <:col :let={{_id, datapoint}} label="Medicinetype"><%= datapoint.medicinetype %></:col>
+  <:col :let={{_id, datapoint}} label="Region"><%= datapoint.region %></:col>
+  <:col :let={{_id, datapoint}} label="Symptom"><%= datapoint.symptom %></:col>
+  <:col :let={{_id, datapoint}} label="Intensity"><%= datapoint.intensity %></:col>
   <:action :let={{_id, datapoint}}>
     <div class="sr-only">
       <.link navigate={~p"/datapoints/#{datapoint}"}>Show</.link>
@@ -41,7 +42,6 @@
     datapoint={@datapoint}
     options={@options}
     medicine={@medicine}
-    user_id={@user_id}
     patch={~p"/datapoints"}
   />
 </.modal>

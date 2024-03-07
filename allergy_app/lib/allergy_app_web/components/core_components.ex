@@ -319,7 +319,6 @@ defmodule AllergyAppWeb.CoreComponents do
           class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
           {@rest}
         />
-        <%= @label %>
       </label>
       <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
@@ -336,7 +335,7 @@ defmodule AllergyAppWeb.CoreComponents do
       <div phx-feedback-for={@name}>
         <.label for={@id}><%= @label %></.label>
         <input type="hidden" name={@name} value={@rest.intensity} />
-        <div>
+        <div class="text-yellow-600">
           <a phx-click="set_intensity" phx-value-intensity="1" phx-target="#datapoint-form">
             <%= if @value != nil && @value != "" &&  @value >= 1 do %>
               <.icon name="hero-star-solid" class="h-8 w-8" />
@@ -530,7 +529,7 @@ defmodule AllergyAppWeb.CoreComponents do
 
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class="w-[40rem] mt-11 sm:w-full">
+      <table class="w-[20rem] mt-11 sm:w-full">
         <thead class="text-sm text-left leading-6 text-zinc-300">
           <tr>
             <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal"><%= col[:label] %></th>

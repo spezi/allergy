@@ -6,11 +6,17 @@ defmodule AllergyAppWeb.DatapointLive.Index do
   alias AllergyAppWeb.DatapointLive.Options
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_params, %{"user_token" => user_token} = _session, socket) do
+
+    user = AllergyApp.Accounts.get_user_by_session_token(user_token)
+    #dbg(user)
+
+    #dbg(Allergy.list_datapoints())
 
     {:ok, stream(socket, :datapoints, Allergy.list_datapoints())
     |> assign(:options, Options.options())
     |> assign(:medicine, false)
+    |> assign(:user_id, user.id)
     }
   end
 
