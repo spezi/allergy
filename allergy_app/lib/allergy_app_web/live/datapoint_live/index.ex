@@ -3,27 +3,38 @@ defmodule AllergyAppWeb.DatapointLive.Index do
 
   alias AllergyApp.Allergy
   alias AllergyApp.Allergy.Datapoint
+  alias AllergyAppWeb.DatapointLive.Options
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :datapoints, Allergy.list_datapoints())}
+
+    {:ok, stream(socket, :datapoints, Allergy.list_datapoints())
+    |> assign(:options, Options.options())
+    |> assign(:medicine, false)
+    }
   end
 
   @impl true
   def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)
+
+    }
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Datapoint")
     |> assign(:datapoint, Allergy.get_datapoint!(id))
+
   end
 
   defp apply_action(socket, :new, _params) do
+
     socket
     |> assign(:page_title, "New Datapoint")
     |> assign(:datapoint, %Datapoint{})
+
+
   end
 
   defp apply_action(socket, :index, _params) do
@@ -44,4 +55,5 @@ defmodule AllergyAppWeb.DatapointLive.Index do
 
     {:noreply, stream_delete(socket, :datapoints, datapoint)}
   end
+
 end

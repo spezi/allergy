@@ -5,6 +5,7 @@ defmodule AllergyAppWeb.DatapointLive.FormComponent do
 
   @impl true
   def render(assigns) do
+    dbg(assigns.form.source.changes)
     ~H"""
     <div>
       <.header>
@@ -20,10 +21,10 @@ defmodule AllergyAppWeb.DatapointLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:medicine]} type="checkbox" label="Medicine" />
-        <.input field={@form[:medicinetype]} type="text" label="Medicinetype" />
-        <.input field={@form[:region]} type="text" label="Region" />
-        <.input field={@form[:symptom]} type="text" label="Symptom" />
-        <.input field={@form[:intensity]} type="number" label="Intensity" />
+        <.input :if={@medicine} field={@form[:medicinetype]} type="select" label="Medicinetype" options={@options.medizinetype} />
+        <.input field={@form[:region]} type="select" label="Region" options={@options.region} />
+        <.input field={@form[:symptom]} type="select" label="Symptom" options={@options.symptom} />
+        <.input field={@form[:intensity]} type="checkbox-intensity" label="Intensity" intensity={assigns.form.source.changes[:intensity]} />
         <:actions>
           <.button phx-disable-with="Saving...">Save Datapoint</.button>
         </:actions>
@@ -31,6 +32,7 @@ defmodule AllergyAppWeb.DatapointLive.FormComponent do
     </div>
     """
   end
+
 
   @impl true
   def update(%{datapoint: datapoint} = assigns, socket) do
@@ -44,16 +46,43 @@ defmodule AllergyAppWeb.DatapointLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"datapoint" => datapoint_params}, socket) do
+    #form[:changes].form.source.changes[:medicine]
+    dbg(datapoint_params)
     changeset =
       socket.assigns.datapoint
       |> Allergy.change_datapoint(datapoint_params)
       |> Map.put(:action, :validate)
 
-    {:noreply, assign_form(socket, changeset)}
+    {:noreply,
+      assign_form(socket, changeset)
+      |> assign(:medicine, changeset.changes[:medicine])
+    }
   end
 
   def handle_event("save", %{"datapoint" => datapoint_params}, socket) do
     save_datapoint(socket, socket.assigns.action, datapoint_params)
+  end
+
+  @impl true
+  def handle_event("set_intensity", %{"intensity" => intensity}, socket) do
+    dbg(intensity)
+    dbg(socket.assigns.form.params)
+    #dbg()
+
+    params = Map.replace(socket.assigns.form.params, "intensity", intensity)
+    #params = %{
+    #  "intensity" => intensity
+    #}
+
+    changeset =
+      socket.assigns.datapoint
+      |> Allergy.change_datapoint(params)
+      |> Map.put(:action, :validate)
+
+    dbg(changeset)
+    {:noreply,
+      assign_form(socket, changeset)
+    }
   end
 
   defp save_datapoint(socket, :edit, datapoint_params) do

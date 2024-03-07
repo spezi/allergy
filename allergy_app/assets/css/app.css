@@ -3,3 +3,16 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+body {
+    background-color: #182a2e;
+}
+
+#background {
+    background-image: url(/images/logo.png);
+    width: 320px;
+    height: 300px;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+  }

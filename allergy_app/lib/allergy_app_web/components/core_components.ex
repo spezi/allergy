@@ -50,7 +50,7 @@ defmodule AllergyAppWeb.CoreComponents do
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >
-      <div id={"#{@id}-bg"} class="bg-zinc-50/90 fixed inset-0 transition-opacity" aria-hidden="true" />
+      <div id={"#{@id}-bg"} class="bg-zinc-900/60 fixed inset-0 transition-opacity" aria-hidden="true" />
       <div
         class="fixed inset-0 overflow-y-auto"
         aria-labelledby={"#{@id}-title"}
@@ -66,7 +66,7 @@ defmodule AllergyAppWeb.CoreComponents do
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white p-14 shadow-lg ring-1 transition"
+              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-zinc-600/90 p-14 shadow-lg ring-1 transition"
             >
               <div class="absolute top-6 right-5">
                 <button
@@ -201,7 +201,7 @@ defmodule AllergyAppWeb.CoreComponents do
   def simple_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="mt-10 space-y-8 bg-white">
+      <div class="mt-10 space-y-8">
         <%= render_slot(@inner_block, f) %>
         <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
           <%= render_slot(action, f) %>
@@ -323,6 +323,62 @@ defmodule AllergyAppWeb.CoreComponents do
       </label>
       <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
+    """
+  end
+
+  def input(%{type: "checkbox-intensity"} = assigns) do
+    #assigns =
+    #  assign_new(assigns, :checked, fn ->
+    #    Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])
+    #  end)
+    #dbg(assigns)
+    ~H"""
+      <div phx-feedback-for={@name}>
+        <.label for={@id}><%= @label %></.label>
+        <input type="hidden" name={@name} value={@rest.intensity} />
+        <div>
+          <a phx-click="set_intensity" phx-value-intensity="1" phx-target="#datapoint-form">
+            <%= if @value != nil && @value != "" &&  @value >= 1 do %>
+              <.icon name="hero-star-solid" class="h-8 w-8" />
+            <% else %>
+              <.icon name="hero-star" class="h-8 w-8" />
+            <% end %>
+          </a>
+
+          <a phx-click="set_intensity" phx-value-intensity="2" phx-target="#datapoint-form">
+            <%= if @value != nil && @value != "" &&  @value >= 2 do %>
+              <.icon name="hero-star-solid" class="h-8 w-8" />
+            <% else %>
+              <.icon name="hero-star" class="h-8 w-8" />
+            <% end %>
+          </a>
+
+          <a phx-click="set_intensity" phx-value-intensity="3" phx-target="#datapoint-form">
+            <%= if @value != nil && @value != "" &&  @value >= 3 do %>
+              <.icon name="hero-star-solid" class="h-8 w-8" />
+            <% else %>
+              <.icon name="hero-star" class="h-8 w-8" />
+            <% end %>
+          </a>
+
+          <a phx-click="set_intensity" phx-value-intensity="4" phx-target="#datapoint-form">
+            <%= if @value != nil && @value != "" &&  @value >= 4 do %>
+              <.icon name="hero-star-solid" class="h-8 w-8" />
+            <% else %>
+              <.icon name="hero-star" class="h-8 w-8" />
+            <% end %>
+          </a>
+
+          <a phx-click="set_intensity" phx-value-intensity="5" phx-target="#datapoint-form">
+            <%= if @value != nil && @value != "" && @value == 5 do %>
+              <.icon name="hero-star-solid" class="h-8 w-8" />
+            <% else %>
+              <.icon name="hero-star" class="h-8 w-8" />
+            <% end %>
+          </a>
+        </div>
+        <.error :for={msg <- @errors}><%= msg %></.error>
+      </div>
     """
   end
 
@@ -475,7 +531,7 @@ defmodule AllergyAppWeb.CoreComponents do
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
       <table class="w-[40rem] mt-11 sm:w-full">
-        <thead class="text-sm text-left leading-6 text-zinc-500">
+        <thead class="text-sm text-left leading-6 text-zinc-300">
           <tr>
             <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal"><%= col[:label] %></th>
             <th :if={@action != []} class="relative p-0 pb-4">
@@ -486,7 +542,7 @@ defmodule AllergyAppWeb.CoreComponents do
         <tbody
           id={@id}
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
-          class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700"
+          class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-300"
         >
           <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group hover:bg-zinc-50">
             <td
@@ -495,18 +551,18 @@ defmodule AllergyAppWeb.CoreComponents do
               class={["relative p-0", @row_click && "hover:cursor-pointer"]}
             >
               <div class="block py-4 pr-6">
-                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-50 sm:rounded-l-xl" />
-                <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
+                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-600 sm:rounded-l-xl" />
+                <span class={["relative", i == 0 && "font-semibold text-zinc-300"]}>
                   <%= render_slot(col, @row_item.(row)) %>
                 </span>
               </div>
             </td>
             <td :if={@action != []} class="relative w-14 p-0">
               <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-zinc-50 sm:rounded-r-xl" />
+                <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-zinc-800 sm:rounded-r-xl" />
                 <span
                   :for={action <- @action}
-                  class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+                  class="relative ml-4 font-semibold leading-6 text-zinc-400 hover:text-zinc-500"
                 >
                   <%= render_slot(action, @row_item.(row)) %>
                 </span>
@@ -539,7 +595,7 @@ defmodule AllergyAppWeb.CoreComponents do
       <dl class="-my-4 divide-y divide-zinc-100">
         <div :for={item <- @item} class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
           <dt class="w-1/4 flex-none text-zinc-500"><%= item.title %></dt>
-          <dd class="text-zinc-700"><%= render_slot(item) %></dd>
+          <dd class="text-zinc-300"><%= render_slot(item) %></dd>
         </div>
       </dl>
     </div>
@@ -561,7 +617,7 @@ defmodule AllergyAppWeb.CoreComponents do
     <div class="mt-16">
       <.link
         navigate={@navigate}
-        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+        class="text-sm font-semibold leading-6 text-zinc-300 hover:text-zinc-400"
       >
         <.icon name="hero-arrow-left-solid" class="h-3 w-3" />
         <%= render_slot(@inner_block) %>
