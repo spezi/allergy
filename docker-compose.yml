@@ -18,19 +18,6 @@ services:
          - '0.0.0.0:8084:4000'
       networks:
          - allergy_prod
-      cgroup: private
-      read_only: true
-      deploy:
-         resources:
-            limits:
-               cpus: '1.0'
-               memory: 1G
-               pids: 100
-         restart_policy:
-            condition: on-failure
-            delay: 5s
-            max_attempts: 5
-            window: 120s
       depends_on:
          # The DB container needs to be started before we start this container.
          - db
@@ -53,19 +40,6 @@ services:
          - pgdata:/var/lib/postgresql/data
       tmpfs:
          - /var/run:rw
-      cgroup: private
-      read_only: true
-      deploy:
-         resources:
-            limits:
-               cpus: '1.0'
-               memory: 1G
-               pids: 100
-         restart_policy:
-            condition: on-failure
-            delay: 5s
-            max_attempts: 5
-            window: 120s
 
 # Define Networks
 networks:
