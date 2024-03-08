@@ -1,0 +1,78 @@
+# Version of docker-compose.
+version: '3'
+
+# Containers we're going to run.
+services:
+   # Our Phoenix container.
+   allergy_phoenix_prod:
+      image: allergy:latest 
+      environment:
+         # Variables to connect to our Postgres server.
+         DATABASE_URL: ${DATABASE_URL}
+         SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+         PHX_HOST: ${PHX_HOST}
+      security_opt: 
+         - no-new-privileges
+      ports:
+         # Mapping the port to make the Phoenix app accessible outside of the container.
+         - '0.0.0.0:8084:4444'
+      networks:
+         - allergy_prod
+      cgroup: private
+      read_only: true
+      deploy:
+         resources:
+            limits:
+               cpus: '1.0'
+               memory: 1G
+               pids: 100
+         restart_policy:
+            condition: on-failure
+            delay: 5s
+            max_attempts: 5
+            window: 120s
+      depends_on:
+         # The DB container needs to be started before we start this container.
+         - db
+   db:
+      # We use the predefined Postgres image.
+      image: postgres:latest
+      environment:
+         # Set user/password for Postgres.
+         POSTGRES_USER: postgres
+         POSTGRES_PASSWORD: postgres
+         # Set a path where Postgres should store the data.
+         PGDATA: /var/lib/postgresql/data/pgdata
+      security_opt: 
+         - no-new-privileges
+      ports:
+         - '5432:5432'
+      networks:
+         - allergy_prod
+      volumes:
+         - pgdata:/var/lib/postgresql/data
+      tmpfs:
+         - /var/run:rw
+      cgroup: private
+      read_only: true
+      deploy:
+         resources:
+            limits:
+               cpus: '1.0'
+               memory: 1G
+               pids: 100
+         restart_policy:
+            condition: on-failure
+            delay: 5s
+            max_attempts: 5
+            window: 120s
+
+# Define Networks
+networks:
+    allergy_prod:
+      driver_opts:
+        com.docker.network.bridge.name: br-allergy-prod # name for the virtual network interface on host, avoids docker-generated cryptic network names
+
+# Define the volumes.
+volumes:
+   pgdata:
