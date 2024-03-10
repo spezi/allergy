@@ -16,7 +16,7 @@ defmodule AllergyApp.Allergy.Datapoint do
   @doc false
   def changeset(datapoint, attrs) do
     datapoint
-    |> cast(attrs, [:medicine, :medicinetype, :region, :symptom, :intensity])
-    |> validate_required([:medicine, :region, :symptom, :intensity])
+    |> cast(attrs, [:medicine, :medicinetype, :region, :symptom, :intensity, :user_id])
+    |> validate_required([:medicine, :region, :symptom, :intensity, :user_id])
   end
 end

@@ -21,6 +21,12 @@ defmodule AllergyApp.Allergy do
     Repo.all(Datapoint)
   end
 
+  def list_datapoints_by_user!(id) do
+    query = from(d in Datapoint, where: d.user_id == ^id, select: d)
+
+    Repo.all(query)
+  end
+
   @doc """
   Gets a single datapoint.
 
